@@ -24,6 +24,8 @@ new_cols = ["Tipo divisa","fecha","valor"]
 data_uf=data_uf.reindex(columns=new_cols)
 data_uf=data_uf[data_uf['fecha'].str.contains(month_today)]
 
+print(now_utc)
+
 ##conexión a BD
 DRIVER_NAME = 'ODBC Driver 18 for SQL Server'
 SERVER_NAME = '192.168.1.31,1433'
