@@ -4,7 +4,7 @@ from time import gmtime, strftime
 from datetime import datetime, timezone, timedelta
 import pytz
 from pytz import timezone
-import pypyodbc as odbc 
+import pyodbc
 
 year_today = datetime.now(timezone('UTC')).strftime("%Y")
 url = "https://mindicador.cl/api/uf/"+year_today
@@ -24,38 +24,27 @@ new_cols = ["Tipo divisa","fecha","valor"]
 data_uf=data_uf.reindex(columns=new_cols)
 data_uf=data_uf[data_uf['fecha'].str.contains(month_today)]
 
-
 ##conexión a BD
-
-DRIVER_NAME = 'SQL SERVER' 
-SERVER_NAME = 'axnew.cindependencia.cl,1569'
+DRIVER_NAME = 'ODBC Driver 18 for SQL Server'
+SERVER_NAME = '192.168.1.31,1433'
 DATABASE_NAME = 'GoogleDrive'
-UID='DCOBR'
-PWD='pago,,1010'; 
+UID='google'
+PWD='Pago1010.'; 
 
-def connection_stirng(driver_name, server_name, database_name,uid, pwd):
-    conn_string = f"""
-        DRIVER={{{driver_name}}};
-        SERVER={server_name};
-        DATABASE={database_name};
-        UID={uid};
-        PWD={pwd};   
-        Trust_Connection=yes;        
-    """
-    return conn_string
 try:
-    conn = odbc.connect(connection_stirng(DRIVER_NAME,SERVER_NAME,DATABASE_NAME,UID,PWD))
+    conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};SERVER='+SERVER_NAME+';DATABASE='+DATABASE_NAME+';ENCRYPT=no;UID='+UID+';PWD='+ PWD +'')
     print('Connection created') 
-except odbc.DatabaseError as e:
-    print('Database Error:')
+except pyodbc.DatabaseError as e:
+    print('Database Error 1:')
     print(str(e.value[1]))
-except odbc.Error as e:
-    print('Connection Error:')
+except pyodbc.Error as e:
+    print('Connection Error 2:')
     print(str(e.value[1]))
 
 
 cursor = conn.cursor() 
-cursor.executemany('delete from [GoogleDrive].[dbo].[ExchangeRate]')
+cursor.execute("delete from GoogleDrive.dbo.ExchangeRate") 
+cursor.execute("INSERT INTO [dbo].[ExecuteDocker]([Tabla],[Fecha]) VALUES ('ExchangeRate',GETDATE())") 
 
 sql_insert = '''
     INSERT INTO [GoogleDrive].[dbo].[ExchangeRate]
