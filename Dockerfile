@@ -10,5 +10,4 @@ RUN chmod +x /bin/my_python
 CMD crond -l 2 -f
 
 COPY /requirements.txt /requirements.txt
-RUN pip install --upgrade pip
-RUN pip install -r /requirements.txt
+RUN pip --no-cache-dir install -r /requirements.txt
