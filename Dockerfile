@@ -1,8 +1,7 @@
 FROM python:alpine3.17
 
-RUN apk add --no-cache curl gcc g++ unixodbc-dev \
-    && pip3 install --upgrade pip \
-    && pip3 install pandas
+RUN apk --no-cache --update-cache add curl gcc g++ unixodbc-dev python3 py3-pip py3-arrow  py3-pandas \
+    && pip3 install --upgrade pip 
 
 COPY my_python /bin/my_python
 COPY root /var/spool/cron/crontabs/root
