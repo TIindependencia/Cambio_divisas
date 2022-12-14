@@ -3,7 +3,7 @@ COPY my_python /bin/my_python
 COPY root /var/spool/cron/crontabs/root
 RUN chmod +x /bin/my_python
 CMD crond -l 2 -f
-RUN sudo pip3 install pyodbc
+RUN pip3 install pyodbc
 RUN pip install -r pandas
 RUN pip install -r requests
 RUN pip install -r pytz
