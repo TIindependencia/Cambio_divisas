@@ -1,5 +1,5 @@
+pyodbc
 pandas
 pypyodbc
 requests
 pytz
-pyodbc
