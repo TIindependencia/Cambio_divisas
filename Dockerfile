@@ -3,4 +3,4 @@ COPY my_python /bin/my_python
 COPY root /var/spool/cron/crontabs/root
 RUN chmod +x /bin/my_python
 CMD crond -l 2 -f
-RUN pip install -r Requirements.txt
+RUN pip install -r Requeriments.txt
