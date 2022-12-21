@@ -72,7 +72,7 @@ finally:
     cursor.close()
     conn.close()
 
-
+##Carga uf a drive
 data_uf2=data_uf
 data_uf2['fecha'] = pd.to_datetime(data_uf2.fecha)
 data_uf2=data_uf2.sort_values(by='fecha',ascending=True)
