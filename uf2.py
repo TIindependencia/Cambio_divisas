@@ -2,12 +2,8 @@ import requests
 import pandas as pd
 from time import gmtime, strftime
 from datetime import datetime, timezone, timedelta
-import pytz
 from pytz import timezone
-import pypyodbc as odbc 
 from Google import create_service
-import numpy as np
-import pyodbc
 
 
 year_today = datetime.now(timezone('UTC')).strftime("%Y")
@@ -28,48 +24,7 @@ new_cols = ["Tipo divisa","fecha","valor"]
 data_uf=data_uf.reindex(columns=new_cols)
 data_uf=data_uf[data_uf['fecha'].str.contains(month_today)]
 
-##conexión a BD
-DRIVER_NAME = 'ODBC Driver 18 for SQL Server'
-SERVER_NAME = '192.168.1.31,1433'
-DATABASE_NAME = 'GoogleDrive'
-UID='google'
-PWD='Pago1010.'; 
 
-try:
-    conn = pyodbc.connect('DRIVER={ODBC Driver 18 for SQL Server};SERVER='+SERVER_NAME+';DATABASE='+DATABASE_NAME+';ENCRYPT=no;UID='+UID+';PWD='+ PWD +'')
-    print('Connection created') 
-except pyodbc.DatabaseError as e:
-    print('Database Error 1:')
-    print(str(e.value[1]))
-except pyodbc.Error as e:
-    print('Connection Error 2:')
-    print(str(e.value[1]))
-
-
-cursor = conn.cursor() 
-cursor.execute("delete from GoogleDrive.dbo.ExchangeRate") 
-cursor.execute("INSERT INTO [dbo].[ExecuteDocker]([Tabla],[Fecha]) VALUES ('ExchangeRate',GETDATE())") 
-
-sql_insert = '''
-    INSERT INTO [GoogleDrive].[dbo].[ExchangeRate]
-    VALUES (?, ?, ? )
-    '''
-
-records=data_uf.values.tolist()
-
-try:
-    cursor = conn.cursor()
-    cursor.executemany(sql_insert, records)
-    cursor.commit();    
-except Exception as e:
-    cursor.rollback()
-    print(str(e[1]))
-finally:
-    print('Task is complete.')
-    cursor.close()
-    conn.close()
-
-##Carga uf a drive
 data_uf2=data_uf
 data_uf2['fecha'] = pd.to_datetime(data_uf2.fecha)
 data_uf2=data_uf2.sort_values(by='fecha',ascending=True)
